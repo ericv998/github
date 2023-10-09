@@ -65,7 +65,7 @@ variable "ip_allocation" {
   description = "Static or Dynamic"
   default = {
     static  = "Static"
-    dynamic = "dynamic"
+    dynamic = "Dynamic"
   }
 }
 
