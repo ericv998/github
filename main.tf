@@ -126,7 +126,7 @@ resource "azurerm_windows_virtual_machine" "vm-jump-eus2-01" {
 resource "azurerm_recovery_services_vault" "rsv001" {
   name = "${var.resource_type.recovery_service_vault}-${var.azure_location_short}"
   resource_group_name = azurerm_resource_group.rg1.name
-  location = var.azure_location_short
+  location = var.azure_location
   sku = var.rsv_sku
   tags = var.tags
 }
