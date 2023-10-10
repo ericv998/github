@@ -23,6 +23,7 @@ variable "resource_type" {
     virtual_machine        = "vm"
     recovery_service_vault = "rsv"
     backup_policy          = "bup"
+    key_vault = "kv"
   }
 }
 
