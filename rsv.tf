@@ -4,6 +4,7 @@ resource "azurerm_recovery_services_vault" "rsv001" {
   location            = var.azure_location
   sku                 = var.rsv_sku
   tags                = var.tags
+  soft_delete_enabled = "false"
 }
 
 resource "azurerm_backup_policy_vm" "backuppolicy1" {
