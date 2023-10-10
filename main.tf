@@ -149,7 +149,6 @@ resource "azurerm_backup_protected_vm" "vm-Web-EUS2-001_bu" {
   recovery_vault_name = azurerm_recovery_services_vault.rsv001.name
   source_vm_id        = azurerm_linux_virtual_machine.vm-Web-EUS2-001.id
   backup_policy_id    = azurerm_backup_policy_vm.backuppolicy1.id
-  depends_on          = [azurerm_backup_policy_vm.backuppolicy1]
 }
 
 resource "azurerm_backup_protected_vm" "vm-jump-eus2-01_bu" {
@@ -157,5 +156,4 @@ resource "azurerm_backup_protected_vm" "vm-jump-eus2-01_bu" {
   recovery_vault_name = azurerm_recovery_services_vault.rsv001.name
   source_vm_id        = azurerm_windows_virtual_machine.vm-jump-eus2-01.id
   backup_policy_id    = azurerm_backup_policy_vm.backuppolicy1.id
-  depends_on          = [azurerm_backup_policy_vm.backuppolicy1]
 }
