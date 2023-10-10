@@ -29,3 +29,7 @@ resource "azurerm_key_vault" "key_vault" {
     enabled_for_deployment = "true"
     tags = var.tags
 }
+
+output "id" {
+  value = azurerm_key_vault.key_vault.id
+}

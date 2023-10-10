@@ -1,16 +1,16 @@
 module "rg1" {
-  source = "./modules/resource_group"
+  source   = "./modules/resource_group"
   name     = "${var.resource_type.resource_group}-${var.azure_location_short}"
   location = var.azure_location
   tags     = var.tags
 }
 
 module "kv1" {
-  source = "./modules/key_vault"
-  kv_name = "${var.resource_type.key_vault}-${var.azure_location_short}-01"
+  source   = "./modules/key_vault"
+  kv_name  = "${var.resource_type.key_vault}-${var.azure_location_short}-01"
   location = var.azure_location
-  rg_name = module.rg1.name
-  tags = var.tags
+  rg_name  = module.rg1.name
+  tags     = var.tags
 }
 
 resource "azurerm_subnet" "Web" {
@@ -92,7 +92,7 @@ resource "azurerm_network_interface" "nic2" {
 resource "azurerm_linux_virtual_machine" "vm-Web-EUS2-001" {
   resource_group_name             = module.rg1.name
   admin_username                  = local.admin_username
-  admin_password                  = local.admin_password
+  admin_password                  = azurerm_key_vault_secret.admin_pw_lin.value
   location                        = var.azure_location
   name                            = "${var.resource_type.virtual_machine}-${var.subnet.web}-${var.azure_location_short}-01"
   network_interface_ids           = [azurerm_network_interface.nic1.id]
@@ -114,7 +114,7 @@ resource "azurerm_linux_virtual_machine" "vm-Web-EUS2-001" {
 resource "azurerm_windows_virtual_machine" "vm-jump-eus2-01" {
   resource_group_name   = module.rg1.name
   admin_username        = local.admin_username
-  admin_password        = local.admin_password
+  admin_password        = azurerm_key_vault_secret.admin_pw_win.value
   location              = var.azure_location
   name                  = "${var.resource_type.virtual_machine}-${var.subnet.jumpbox}-${var.azure_location_short}-01"
   network_interface_ids = [azurerm_network_interface.nic2.id]
@@ -165,4 +165,24 @@ resource "azurerm_backup_protected_vm" "vm-jump-eus2-01_bu" {
   recovery_vault_name = azurerm_recovery_services_vault.rsv001.name
   source_vm_id        = azurerm_windows_virtual_machine.vm-jump-eus2-01.id
   backup_policy_id    = azurerm_backup_policy_vm.backuppolicy1.id
+}
+
+resource "random_password" "admin_password_linux" {
+  length = 16
+}
+
+resource "random_password" "admin_password_windows" {
+  length = 16
+}
+
+resource "azurerm_key_vault_secret" "admin_pw_win" {
+  name         = "windows-admin-pw"
+  value        = random_password.admin_password_windows.result
+  key_vault_id = module.kv1.id
+}
+
+resource "azurerm_key_vault_secret" "admin_pw_lin" {
+  name         = "linux-admin-pw"
+  value        = random_password.admin_password_linux.result
+  key_vault_id = module.kv1.id
 }
