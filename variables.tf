@@ -22,7 +22,7 @@ variable "resource_type" {
     subnet                 = "snet"
     virtual_machine        = "vm"
     recovery_service_vault = "rsv"
-    backup_policy = "bup"
+    backup_policy          = "bup"
   }
 }
 
@@ -32,7 +32,7 @@ variable "subnet" {
   default = {
     web     = "web"
     data    = "data"
-    jumpbox = "jumpbox"
+    jumpbox = "jump"
   }
 }
 
@@ -109,40 +109,40 @@ variable "os_disk" {
 }
 
 variable "disable_pass_auth" {
-    type = bool
-    description = "Disable Password Authentication"
-    default = "false"
+  type        = bool
+  description = "Disable Password Authentication"
+  default     = "false"
 }
 
 variable "rsv_sku" {
-    type = string
-    description = "Recovery Services Vault SKU"
-    default = "Standard"
+  type        = string
+  description = "Recovery Services Vault SKU"
+  default     = "Standard"
 }
 
 variable "backup_pol_freq" {
-    type = string
-    description = "Frequency of backups"
-    default = "Daily"
+  type        = string
+  description = "Frequency of backups"
+  default     = "Daily"
 }
 
 variable "backup_time" {
-    type = string
-    description = "Time of backups"
-    default = "23:00"
+  type        = string
+  description = "Time of backups"
+  default     = "23:00"
 }
 
 variable "backups_to_keep" {
-    type = number
-    description = "Count of the number of daily backups to keep"
-    default = 30
+  type        = number
+  description = "Count of the number of daily backups to keep"
+  default     = 30
 }
 
 variable "tags" {
-  type = map(string)
+  type        = map(string)
   description = "Default Strings"
   default = {
     "managed_by" = "terraform"
-    "BU" = "IT"
+    "BU"         = "IT"
   }
 }

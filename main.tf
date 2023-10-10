@@ -1,7 +1,7 @@
 resource "azurerm_resource_group" "rg1" {
   name     = "${var.resource_type.resource_group}-${var.azure_location_short}"
   location = var.azure_location
-  tags = var.tags
+  tags     = var.tags
 }
 
 resource "azurerm_subnet" "Web" {
@@ -35,14 +35,14 @@ resource "azurerm_virtual_network" "vnet1" {
   resource_group_name = azurerm_resource_group.rg1.name
   address_space       = var.vnet1_address_space
   location            = var.azure_location
-  tags = var.tags
+  tags                = var.tags
 }
 
 resource "azurerm_network_security_group" "nsg1" {
   name                = "${var.resource_type.network_security_group}-${var.subnet.web}-${var.azure_location_short}"
   location            = var.azure_location
   resource_group_name = azurerm_resource_group.rg1.name
-  tags = var.tags
+  tags                = var.tags
 }
 
 resource "azurerm_public_ip" "pip1" {
@@ -50,14 +50,14 @@ resource "azurerm_public_ip" "pip1" {
   resource_group_name = azurerm_resource_group.rg1.name
   location            = var.azure_location
   allocation_method   = var.ip_allocation.static
-  tags = var.tags
+  tags                = var.tags
 }
 
 resource "azurerm_network_interface" "nic1" {
   name                = "${var.resource_type.network_interface}-${var.azure_location_short}-01"
   location            = var.azure_location
   resource_group_name = azurerm_resource_group.rg1.name
-  tags = var.tags
+  tags                = var.tags
 
   ip_configuration {
     name                          = "public-nic"
@@ -71,7 +71,7 @@ resource "azurerm_network_interface" "nic2" {
   name                = "${var.resource_type.network_interface}-${var.azure_location_short}-02"
   location            = var.azure_location
   resource_group_name = azurerm_resource_group.rg1.name
-  tags = var.tags
+  tags                = var.tags
 
   ip_configuration {
     name                          = "private-nic"
@@ -89,7 +89,7 @@ resource "azurerm_linux_virtual_machine" "vm-Web-EUS2-001" {
   network_interface_ids           = [azurerm_network_interface.nic1.id]
   size                            = var.vm_size.stan_b1ms
   disable_password_authentication = var.disable_pass_auth
-  tags = var.tags
+  tags                            = var.tags
   os_disk {
     caching              = var.os_disk.caching
     storage_account_type = var.os_disk.storage_account_type
@@ -110,7 +110,7 @@ resource "azurerm_windows_virtual_machine" "vm-jump-eus2-01" {
   name                  = "${var.resource_type.virtual_machine}-${var.subnet.jumpbox}-${var.azure_location_short}-01"
   network_interface_ids = [azurerm_network_interface.nic2.id]
   size                  = var.vm_size.stan_b1ms
-  tags = var.tags
+  tags                  = var.tags
   os_disk {
     caching              = var.os_disk.caching
     storage_account_type = var.os_disk.storage_account_type
@@ -124,36 +124,38 @@ resource "azurerm_windows_virtual_machine" "vm-jump-eus2-01" {
 }
 
 resource "azurerm_recovery_services_vault" "rsv001" {
-  name = "${var.resource_type.recovery_service_vault}-${var.azure_location_short}"
+  name                = "${var.resource_type.recovery_service_vault}-${var.azure_location_short}"
   resource_group_name = azurerm_resource_group.rg1.name
-  location = var.azure_location
-  sku = var.rsv_sku
-  tags = var.tags
+  location            = var.azure_location
+  sku                 = var.rsv_sku
+  tags                = var.tags
 }
 
 resource "azurerm_backup_policy_vm" "backuppolicy1" {
-  name = "${var.resource_type.backup_policy}-${var.azure_location_short}-01"
+  name                = "${var.resource_type.backup_policy}-${var.azure_location_short}-01"
   resource_group_name = azurerm_resource_group.rg1.name
   recovery_vault_name = azurerm_recovery_services_vault.rsv001.name
   backup {
     frequency = var.backup_pol_freq
-    time = var.backup_time
+    time      = var.backup_time
   }
   retention_daily {
     count = var.backups_to_keep
   }
 }
 
-resource "azurerm_backup_protected_vm" "vm-Web-EUS2-001_bu"{
+resource "azurerm_backup_protected_vm" "vm-Web-EUS2-001_bu" {
   resource_group_name = azurerm_resource_group.rg1.name
-  recovery_vault_name = azurerm_backup_policy_vm.backuppolicy1.name
-  source_vm_id = azurerm_linux_virtual_machine.vm-Web-EUS2-001.id
-  backup_policy_id = azurerm_backup_policy_vm.backuppolicy1.id
+  recovery_vault_name = azurerm_recovery_services_vault.rsv001.name
+  source_vm_id        = azurerm_linux_virtual_machine.vm-Web-EUS2-001.id
+  backup_policy_id    = azurerm_backup_policy_vm.backuppolicy1.id
+  depends_on          = [azurerm_backup_policy_vm.backuppolicy1]
 }
 
-resource "azurerm_backup_protected_vm" "vm-jump-eus2-01_bu"{
+resource "azurerm_backup_protected_vm" "vm-jump-eus2-01_bu" {
   resource_group_name = azurerm_resource_group.rg1.name
-  recovery_vault_name = azurerm_backup_policy_vm.backuppolicy1.name
-  source_vm_id = azurerm_windows_virtual_machine.vm-jump-eus2-01.id
-  backup_policy_id = azurerm_backup_policy_vm.backuppolicy1.id
+  recovery_vault_name = azurerm_recovery_services_vault.rsv001.name
+  source_vm_id        = azurerm_windows_virtual_machine.vm-jump-eus2-01.id
+  backup_policy_id    = azurerm_backup_policy_vm.backuppolicy1.id
+  depends_on          = [azurerm_backup_policy_vm.backuppolicy1]
 }
