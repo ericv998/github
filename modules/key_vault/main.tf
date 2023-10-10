@@ -28,6 +28,13 @@ resource "azurerm_key_vault" "key_vault" {
     tenant_id = data.azurerm_client_config.current.tenant_id
     enabled_for_deployment = "true"
     tags = var.tags
+
+    lifecycle {
+    ignore_changes = [
+      # Ignore these settings so that key values and attributes are manually managed
+      access_policy
+    ]
+  }
 }
 
 output "id" {
