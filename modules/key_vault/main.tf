@@ -20,6 +20,16 @@ variable "tags" {
     type = map(string)
 }
 
+resource "azurerm_key_vault_access_policy" "kv_access_policy1" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
+
+  secret_permissions = [
+    "Get","Backup","Delete","List","Purge","Recover","Restore","Set",
+  ]
+}
+
 resource "azurerm_key_vault" "key_vault" {
     name = var.kv_name
     location = var.location
