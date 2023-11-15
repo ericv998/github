@@ -24,6 +24,11 @@ variable "resource_type" {
     recovery_service_vault = "rsv"
     backup_policy          = "bup"
     key_vault              = "kv"
+    load_balancer          = "lb"
+    load_balancer_fe       = "lbfe"
+    load_balancer_rule     = "lbr"
+    load_balancer_probe    = "lbp"
+    load_balancer_backend  = "lbbe"
   }
 }
 
