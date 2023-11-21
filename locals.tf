@@ -8,10 +8,9 @@ locals {
   vnet1_name         = "${var.resource_type.virtual_network}-${var.azure_location_short}"
   nsg_name           = "${var.resource_type.network_security_group}-${var.subnet.web}-${var.azure_location_short}"
   pip1_name          = "${var.resource_type.public_ip}-${var.azure_location_short}-01"
-  pip2_name          = "${var.resource_type.public_ip}-${var.azure_location_short}-02"
-  nic1_name          = "${var.resource_type.network_interface}-${var.azure_location_short}-01"
+  linux_nic_name          = "${var.resource_type.network_interface}-linux-${var.azure_location_short}"
   nic2_name          = "${var.resource_type.network_interface}-${var.azure_location_short}-02"
-  web_vm_name        = "${var.resource_type.virtual_machine}-${var.subnet.web}-${var.azure_location_short}-01"
+  web_vm_name        = "${var.resource_type.virtual_machine}-${var.subnet.web}-${var.azure_location_short}"
   jump_vm_name       = "${var.resource_type.virtual_machine}-${var.subnet.jumpbox}-${var.azure_location_short}-01"
   rsv_name           = "${var.resource_type.recovery_service_vault}-${var.azure_location_short}"
   backup_policy_name = "${var.resource_type.backup_policy}-${var.azure_location_short}-01"
@@ -20,5 +19,6 @@ locals {
   lb_rule1_name      = "${var.resource_type.load_balancer_rule}-${var.azure_location_short}-01"
   lb_probe1_name     = "${var.resource_type.load_balancer_probe}-${var.azure_location_short}-01"
   lb_backend_pool1   = "${var.resource_type.load_balancer_backend}-${var.azure_location_short}-01"
+  availability_set_name = "${var.resource_type.availability_set}-${var.azure_location_short}-01"
 }
 
