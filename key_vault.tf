@@ -18,10 +18,16 @@ resource "azurerm_key_vault_secret" "admin_pw_win" {
   name         = "windows-admin-pw"
   value        = random_password.admin_password_windows.result
   key_vault_id = module.kv1.id
+  depends_on = [
+    module.kv1
+   ]
 }
 
 resource "azurerm_key_vault_secret" "admin_pw_lin" {
   name         = "linux-admin-pw"
   value        = random_password.admin_password_linux.result
   key_vault_id = module.kv1.id
+  depends_on = [ 
+    module.kv1
+   ]
 }

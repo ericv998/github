@@ -20,10 +20,11 @@ resource "azurerm_backup_policy_vm" "backuppolicy1" {
   }
 }
 
-resource "azurerm_backup_protected_vm" "vm-Web-EUS2-001_bu" {
+resource "azurerm_backup_protected_vm" "linux_backups" {
+  count = var.linux_vm_count
   resource_group_name = module.rg1.name
   recovery_vault_name = azurerm_recovery_services_vault.rsv001.name
-  source_vm_id        = azurerm_linux_virtual_machine.vm-Web-EUS2-001.id
+  source_vm_id        = module.linux_virtual_machine[count.index].id
   backup_policy_id    = azurerm_backup_policy_vm.backuppolicy1.id
 }
 

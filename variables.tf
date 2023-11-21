@@ -29,6 +29,7 @@ variable "resource_type" {
     load_balancer_rule     = "lbr"
     load_balancer_probe    = "lbp"
     load_balancer_backend  = "lbbe"
+    availability_set = "as"
   }
 }
 
@@ -151,4 +152,10 @@ variable "tags" {
     "managed_by" = "terraform"
     "BU"         = "IT"
   }
+}
+
+variable "linux_vm_count" {
+  description = "Number of Linux VMs to create"
+  type = number
+  default = 1
 }
